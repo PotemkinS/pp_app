@@ -11,43 +11,32 @@ import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { gStyles } from "../styles";
 
-export default function Main() {
+export default function Main({ route }) {
+  const { info } = route.params;
+  const { tests } = route.params;
+  const { token } = route.params;
   const navigation = useNavigation();
   const [profile, setProfile] = useState(false);
-  const [currentTest, setTest] = useState(null);
   function showTests() {
-    const tests = [
-      "ты кто такой",
-      "география",
-      "математика",
-      "автобусы",
-      "шоколадки",
-      "политики",
-      "телефоны",
-      "вопросы",
-      "ответы",
-      "всем 2",
-      "всем 2",
-      "всем 2",
-      "всем 2",
-      "всем 2",
-      "всем 2",
-    ];
-
-    return tests.map((obj, index) => {
+    return tests.map((test, index) => {
       const key = index;
       return (
         <Text
           key={key}
           style={gStyles.text}
-          onPress={() => navigation.navigate("Test", { test: obj })}
+          onPress={() => navigation.navigate("Test", { test: test })}
         >
-          {obj}
+          {test.name}
         </Text>
       );
     });
   }
   if (!profile) {
+    console.log(
+      `${JSON.stringify(token)} + ${JSON.stringify(info)} + ${JSON.stringify(
+        tests
+      )}`
+    );
     return (
       <View style={gStyles.container}>
         <View style={[gStyles.testsContainer]}>
@@ -62,7 +51,7 @@ export default function Main() {
         </View>
         <Text
           style={[gStyles.confirmationButton, gStyles.shadow]}
-          onPress={() => navigation.navigate("Scan")}
+          onPress={() => navigation.navigate("Scan", { token: token })}
         >
           Сканировать
         </Text>
@@ -98,30 +87,30 @@ export default function Main() {
           <Text style={gStyles.titleText}>Профиль</Text>
           <View style={[gStyles.info]}>
             <View>
-              <Text style={gStyles.infoTitle}>Фамилия</Text>
-              <Text style={gStyles.infoTitle}>Имя</Text>
-              <Text style={gStyles.infoTitle}>Отчество</Text>
-              <Text style={gStyles.infoTitle}>Почта</Text>
               <Text style={gStyles.infoTitle}>ID</Text>
-              <Text style={gStyles.infoTitle}>Статус</Text>
+              <Text style={gStyles.infoTitle}>Почта</Text>
+              <Text style={gStyles.infoTitle}>Логин</Text>
+              <Text style={gStyles.infoTitle}>Фио</Text>
             </View>
             <View style={[{ width: 500 }]}>
               <TextInput
+                editable={false}
+                value={info.id}
                 style={[gStyles.textInput, gStyles.infoValues, gStyles.shadow]}
               />
               <TextInput
+                editable={false}
+                value={info.email}
                 style={[gStyles.textInput, gStyles.infoValues, gStyles.shadow]}
               />
               <TextInput
+                editable={false}
+                value={info.username}
                 style={[gStyles.textInput, gStyles.infoValues, gStyles.shadow]}
               />
               <TextInput
-                style={[gStyles.textInput, gStyles.infoValues, gStyles.shadow]}
-              />
-              <TextInput
-                style={[gStyles.textInput, gStyles.infoValues, gStyles.shadow]}
-              />
-              <TextInput
+                editable={false}
+                value={info.fullname}
                 style={[gStyles.textInput, gStyles.infoValues, gStyles.shadow]}
               />
             </View>
@@ -130,7 +119,7 @@ export default function Main() {
             style={[
               gStyles.confirmationButton,
               gStyles.shadow,
-              { alignSelf: "flex-end" },
+              { alignSelf: "center" },
             ]}
             onPress={() => setProfile(false)}
           >

@@ -13,6 +13,16 @@ export const gStyles = StyleSheet.create({
     borderRadius: 100,
   },
 
+  scanCameraContainer: {
+    flex: 1,
+  },
+  cameraContainer: {
+    flex: 1,
+  },
+  fixedRatio: {
+    flex: 1,
+  },
+
   bottomContainer: {
     height: 70,
     position: "absolute",
@@ -120,5 +130,12 @@ export const gStyles = StyleSheet.create({
 
   wideButton: {
     width: 250,
+  },
+
+  button: {
+    flex: 0.1,
+    padding: 10,
+    alignSelf: "flex-end",
+    alignItems: "center",
   },
 });

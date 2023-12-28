@@ -10,7 +10,7 @@ export default function Test({ route }) {
       <View style={gStyles.container}>
         <Text style={gStyles.titleText}>Результаты</Text>
         <View style={gStyles.testsContainer}>
-          <Text>{test}</Text>
+          <Text>{}</Text>
         </View>
       </View>
     );
@@ -27,13 +27,16 @@ export default function Test({ route }) {
             </View>
             <View style={[{ width: 500 }]}>
               <TextInput
-                value={test}
+                value={test.name}
+                editable={false}
                 style={[gStyles.textInput, gStyles.infoValues, gStyles.shadow]}
               />
               <TextInput
+                editable={false}
                 style={[gStyles.textInput, gStyles.infoValues, gStyles.shadow]}
               />
               <TextInput
+                editable={false}
                 style={[gStyles.textInput, gStyles.infoValues, gStyles.shadow]}
               />
             </View>
