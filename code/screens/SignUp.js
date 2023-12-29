@@ -1,9 +1,16 @@
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { gStyles } from "../styles";
+import { useState } from "react";
+import axios from "axios";
 
 export default function MainScreen() {
+  const signUpUrl = "http://91.107.124.140:8000/auth/";
   const navigation = useNavigation();
+  const [username, setUsernName] = useState();
+  const [fullName, setFullName] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
   return (
     <View style={gStyles.container}>
       <View style={gStyles.main}>
@@ -11,22 +18,22 @@ export default function MainScreen() {
         <TextInput
           style={[gStyles.textInput, gStyles.shadow]}
           placeholder="✉ Почта"
+          onChangeText={(newtext) => setEmail(newtext)}
+        ></TextInput>
+        <TextInput
+          style={[gStyles.textInput, gStyles.shadow]}
+          placeholder="логин"
+          onChangeText={(newtext) => setUsernName(newtext)}
+        ></TextInput>
+        <TextInput
+          style={[gStyles.textInput, gStyles.shadow]}
+          placeholder="Фио"
+          onChangeText={(newtext) => setFullName(newtext)}
         ></TextInput>
         <TextInput
           style={[gStyles.textInput, gStyles.shadow]}
           placeholder="✔ Пароль"
-        ></TextInput>
-        <TextInput
-          style={[gStyles.textInput, gStyles.shadow]}
-          placeholder="Фамилия"
-        ></TextInput>
-        <TextInput
-          style={[gStyles.textInput, gStyles.shadow]}
-          placeholder="Имя"
-        ></TextInput>
-        <TextInput
-          style={[gStyles.textInput, gStyles.shadow]}
-          placeholder="Отчество"
+          onChangeText={(newtext) => setPassword(newtext)}
         ></TextInput>
         <TouchableOpacity>
           <Text
@@ -35,7 +42,15 @@ export default function MainScreen() {
               gStyles.shadow,
               gStyles.wideButton,
             ]}
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => (
+              axios.post(signUpUrl, {
+                username: username,
+                password: password,
+                email: email,
+                fullname: fullName,
+              }),
+              navigation.navigate("Login")
+            )}
           >
             {" "}
             Зарегестрироваться
