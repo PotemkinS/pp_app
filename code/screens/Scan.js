@@ -1,4 +1,11 @@
-import { View, Button, Image, Text, ImageBackground } from "react-native";
+import {
+  View,
+  Button,
+  Image,
+  Text,
+  ImageBackground,
+  ScrollView,
+} from "react-native";
 import { gStyles } from "../styles";
 import React, { useState, useEffect } from "react";
 import { Camera } from "expo-camera";
@@ -11,22 +18,42 @@ export default function Scan({ route }) {
   const [madePhoto, setMadePhoto] = useState(false);
   const [makingPhoto, setMakingPhoto] = useState(false);
   const { token } = route.params;
-  const [formData, setFormData] = useState();
-  const [fde, setFde] = useState();
+  const [image, setImage] = useState();
+  const [test, setTest] = useState({
+    result: {
+      test_id: 123,
+      student_id: "noStudent",
+      class_id: "",
+      score: "",
+      answers: [
+        "Василий петрович очень любил муму и потому решил не использовать тетрогидрохлоридвинил ",
+        "да",
+      ],
+    },
+    status_code: 123,
+  });
 
   const [camera, setCamera] = useState(null);
   const [imageUri, setImageUri] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const loadTestUri = "http://91.107.124.140:8000/testresult/";
+  function showAnswers() {
+    return test.result.answers.map((answer, index) => {
+      const key = index;
+      return (
+        <Text key={key} style={gStyles.text}>
+          {index + 1}: {answer}
+        </Text>
+      );
+    });
+  }
 
   const permisionFunction = async () => {
-    // here is how you can get the camera permission
     const cameraPermission = await Camera.requestCameraPermissionsAsync();
 
     setCameraPermission(cameraPermission.status === "granted");
 
     const imagePermission = await ImagePicker.getMediaLibraryPermissionsAsync();
-    console.log(imagePermission.status);
 
     setGalleryPermission(imagePermission.status === "granted");
 
@@ -44,24 +71,33 @@ export default function Scan({ route }) {
 
   const takePicture = async () => {
     if (camera) {
-      const data = await camera.takePictureAsync();
-      let filename = data.uri.split("/").pop();
-      setMadePhoto(true);
+      let result = await camera.takePictureAsync();
+      if (result.cancelled) {
+        return;
+      }
+      setImageUri(result.uri);
       setMakingPhoto(false);
-      setImageUri(data.uri);
-      console.log("imageUri");
-      console.log(imageUri);
-      console.log(data.path);
-      console.log("imageUri");
-      const fd = new FormData();
-      setFde(fd);
-      fd.append("file", {
-        uri: imageUri,
-      });
-      setFormData(fd);
-      console.log(JSON.stringify(fd));
-      console.log(formData);
     }
+  };
+
+  const sendPicture = () => {
+    let formData = new FormData();
+    formData.append("file", {
+      uri: imageUri,
+      name: "image.jpg",
+      filename: "imageName.jpg",
+      type: "image/jpg",
+    });
+    formData.append("Content-Type", "image/jpg");
+    setImage(formData);
+
+    axios(loadTestUri, {
+      method: "post",
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+      data: formData,
+    }).then((resp) => setTest(JSON.parse(resp.request._response)));
   };
 
   return (
@@ -84,7 +120,31 @@ export default function Scan({ route }) {
             />
           </View>
         ) : (
-          <View style={[gStyles.scanContainer, gStyles.shadow]}>
+          <View
+            style={[
+              !(test.result.student_id === "noStudent")
+                ? gStyles.scanContainerResults
+                : gStyles.scanContainerNoResults,
+              gStyles.shadow,
+            ]}
+          >
+            {!(test.result.student_id === "noStudent") ? (
+              <View>
+                <Text style={[gStyles.text]}>
+                  Класс: {test.result.class_id}, Ученик:{" "}
+                  {test.result.student_id}
+                </Text>
+                <Text style={[gStyles.text]}>
+                  Результат: {test.result.score}
+                </Text>
+                <Text style={[gStyles.text]}>Ответы:</Text>
+                <ScrollView style={[gStyles.shadow, { height: 200 }]}>
+                  {showAnswers()}
+                </ScrollView>
+              </View>
+            ) : (
+              <Text></Text>
+            )}
             <Text
               style={[
                 gStyles.confirmationButton,
@@ -101,22 +161,7 @@ export default function Scan({ route }) {
                 gStyles.shadow,
                 gStyles.scanButton,
               ]}
-              onPress={() => (
-                console.log(JSON.stringify("/////////////////")),
-                console.log(JSON.stringify(fde)),
-                console.log(JSON.stringify(formData)),
-                console.log(JSON.stringify(imageUri)),
-                axios
-                  .post(loadTestUri, {
-                    headers: {
-                      "Content-Type": "multipart/form-data",
-                    },
-                    formData,
-                  })
-                  .then((resp) =>
-                    console.log(JSON.stringify(resp.request._response))
-                  )
-              )}
+              onPress={sendPicture}
             >
               Проверить
             </Text>

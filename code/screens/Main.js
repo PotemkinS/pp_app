@@ -32,14 +32,9 @@ export default function Main({ route }) {
     });
   }
   if (!profile) {
-    console.log(
-      `${JSON.stringify(token)} + ${JSON.stringify(info)} + ${JSON.stringify(
-        tests
-      )}`
-    );
     return (
       <View style={gStyles.container}>
-        <View style={[gStyles.testsContainer]}>
+        {/*<View style={[gStyles.testsContainer]}>
           <Text style={[gStyles.titleText, { marginTop: 20, fontSize: 30 }]}>
             Тесты
           </Text>
@@ -48,9 +43,13 @@ export default function Main({ route }) {
           >
             {showTests()}
           </ScrollView>
-        </View>
+    </View>*/}
         <Text
-          style={[gStyles.confirmationButton, gStyles.shadow]}
+          style={[
+            gStyles.confirmationButton,
+            gStyles.shadow,
+            { marginTop: 300 },
+          ]}
           onPress={() => navigation.navigate("Scan", { token: token })}
         >
           Сканировать

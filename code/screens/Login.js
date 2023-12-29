@@ -26,7 +26,6 @@ export default function Login() {
   ]);
   useEffect(() => {
     if (tryingToLogin) {
-      console.log("trying to login");
       axios
         .post(
           loginUrl,

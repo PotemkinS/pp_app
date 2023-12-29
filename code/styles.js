@@ -82,13 +82,20 @@ export const gStyles = StyleSheet.create({
     alignSelf: "center",
   },
 
-  scanContainer: {
+  scanContainerNoResults: {
     alignSelf: "center",
-    justifyContent: "space-around",
-    marginTop: Dimensions.get("window").height / 3,
+    marginTop: Dimensions.get("window").height / 4,
     padding: 20,
-    flexDirection: "row",
     width: "80%",
+    height: 200,
+  },
+
+  scanContainerResults: {
+    alignSelf: "center",
+    marginTop: Dimensions.get("window").height / 10,
+    padding: 20,
+    width: "80%",
+    height: 470,
   },
 
   confirmationButton: {
@@ -102,9 +109,9 @@ export const gStyles = StyleSheet.create({
   },
 
   scanButton: {
-    width: "40%",
+    width: "60%",
     fontSize: 15,
-    marginTop: 0,
+    marginTop: 5,
   },
 
   testsContainer: {
